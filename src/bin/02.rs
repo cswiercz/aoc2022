@@ -22,7 +22,10 @@ pub fn part_one(input: &str) -> Option<u32> {
         .split('\n')
         .map(|line| {
             let mut chars = line.split(' ');
-            score(chars.next().unwrap().chars().next().unwrap(), chars.next().unwrap().chars().next().unwrap())
+            score(
+                chars.next().unwrap().chars().next().unwrap(),
+                chars.next().unwrap().chars().next().unwrap(),
+            )
         })
         .sum();
     Some(result)
@@ -36,15 +39,15 @@ pub fn part_two(input: &str) -> Option<u32> {
             let left = chars.next().unwrap().chars().next().unwrap();
             let right = chars.next().unwrap().chars().next().unwrap();
             match (left, right) {
-                ('A', 'X') => 3 + 0 ,
-                ('A', 'Y') => 2 + 3,
-                ('A', 'Z') => 1 + 6,
+                ('A', 'X') => 2 + 0,
+                ('A', 'Y') => 1 + 3,
+                ('A', 'Z') => 3 + 6,
                 ('B', 'X') => 1 + 0,
-                ('B', 'Y') => 3 + 3,
-                ('B', 'Z') => 2 + 6,
+                ('B', 'Y') => 2 + 3,
+                ('B', 'Z') => 3 + 6,
                 ('C', 'X') => 2 + 0,
-                ('C', 'Y') => 1 + 3,
-                ('C', 'Z') => 3 + 6,
+                ('C', 'Y') => 3 + 3,
+                ('C', 'Z') => 1 + 6,
                 _ => 0,
             }
         })
@@ -65,12 +68,12 @@ mod tests {
     #[test]
     fn test_part_one() {
         let input = advent_of_code::read_file("examples", 2);
-        assert_eq!(part_one(&input), None);
+        assert_eq!(part_one(&input), Some(15));
     }
 
     #[test]
     fn test_part_two() {
         let input = advent_of_code::read_file("examples", 2);
-        assert_eq!(part_two(&input), None);
+        assert_eq!(part_two(&input), Some(12));
     }
 }
