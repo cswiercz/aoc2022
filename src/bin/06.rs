@@ -1,7 +1,6 @@
 use std::collections::HashSet;
 
 pub fn part_one(input: &str) -> Option<u32> {
-    let s = String::from(input);
     let n = input.len();
     let w = 14;
 
@@ -18,7 +17,7 @@ pub fn part_one(input: &str) -> Option<u32> {
     Some(answer)
 }
 
-pub fn part_two(input: &str) -> Option<u32> {
+pub fn part_two(_input: &str) -> Option<u32> {
     None
 }
 
