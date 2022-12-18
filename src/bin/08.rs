@@ -66,67 +66,26 @@ pub fn part_one(input: &str) -> Option<u32> {
     Some(visible.len() as u32)
 }
 
-fn score(grid: &Vec<Vec<u32>>, i: usize, j: usize) -> u32 {
-    let nrows = grid.len();
-    let ncols = grid[0].len();
-
-    let mut pointer: usize;
-    let mut score: u32 = 1;
-    let mut count: u32;
-
-    // right
-    if j < ncols - 1 {
-        pointer = j + 1;
-        count = 1;
-        for idx in (j + 1)..ncols {
-            if grid[i][idx] > grid[i][pointer] {
-                count += 1;
-                pointer = idx;
-            }
-        }
-        score *= count;
+fn count_visible_from_iter<'a, I>(iter: &'a mut I) -> u32 
+where
+    I : Iterator<Item=&'a u32>
+{
+    let mut count = 1;
+    let mut previous_tallest = iter.next();
+    if previous_tallest.is_none() {
+        return 0;
     }
 
-    // down
-    if i < nrows - 1 {
-        pointer = i + 1;
-        count = 1;
-        for idx in (i + 1)..nrows {
-            if grid[idx][j] > grid[pointer][j] {
-                count += 1;
-                pointer = idx;
-            }
+    for current in iter {
+        if Some(current) < previous_tallest {
+            // count += 1;
+            // previous_tallest = Some(current);
+            break;
         }
-        score *= count;
+        count += 1;
+        previous_tallest = Some(current);
     }
-
-    // left
-    if j > 0 {
-        pointer = j - 1;
-        count = 1;
-        for idx in (0..j).rev() {
-            if grid[i][idx] > grid[i][pointer] {
-                count += 1;
-                pointer = idx;
-            }
-        }
-        score *= count;
-    }
-
-    // up
-    if i > 0 {
-        pointer = i - 1;
-        count = 1;
-        for idx in (0..i).rev() {
-            if grid[idx][j] > grid[pointer][j] {
-                count += 1;
-                pointer = idx;
-            }
-        }
-        score *= count;
-    }
-
-    score
+    count
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
@@ -135,10 +94,21 @@ pub fn part_two(input: &str) -> Option<u32> {
     let ncols = grid[0].len();
 
     let mut best_score: u32 = 0;
+    for row in grid.iter() {
+        println!("{:?}", row);
+    }
 
     for i in 0..nrows {
         for j in 0..ncols {
-            best_score = max(best_score, score(&grid, i, j));
+            let right = count_visible_from_iter(&mut grid[i][j+1..].iter());
+            let left = count_visible_from_iter(&mut grid[i][0..j].iter().rev());
+            let down = count_visible_from_iter(&mut (i+1..nrows).map(|k| &grid[k][j]));
+            let up = count_visible_from_iter(&mut (0..i).map(|k| &grid[k][j]).rev());
+            let score = up * left * down * right;
+
+            println!("({}, {}): score = {}, up = {}, left = {}, down = {}, right = {}", i, j, score, up, left, down, right);
+
+            best_score = max(best_score, score);
         }
     }
 
